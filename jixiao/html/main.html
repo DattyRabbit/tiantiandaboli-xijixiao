@@ -1,0 +1,168 @@
+<html>
+    <head>
+        <title>洗绩效模拟v1.1(简陋版)</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <link type="text/css" rel="stylesheet" href="../css/page.css"/>
+        <link type="text/css" rel="stylesheet" href="../css/menu.css"/>
+        <script src="../js/jquery-1.7.2.min.js" type="text/javascript"></script>
+        <script src="../js/skill.js" type="text/javascript"></script>
+        <script type="text/javascript">
+            function gotoWash(){
+                console.log("进入洗练界面");
+                var gotoWashButton = document.getElementById("gotoWashButton");
+                var washButton = document.getElementById("washButton");
+                gotoWashButton.style.display = "none";
+                washButton.style.display = "block";
+                var bgImg = document.getElementById("bg");
+                bgImg.src = "../file/pic/洗练界面.jpg";
+                $("#skillPanel").css({"top":"48.5%"});
+                $("span").css({"opacity":"1"})
+            }
+
+            function startWash(){
+                console.log("开始洗练");
+                //todo获取要洗的技能
+                //展示洗练成功界面
+                var washSuccessPanel = document.getElementById("washSuccessPanel");
+                washSuccessPanel.style.display = "block";
+                //设置面板宽高
+                washSuccessPanel.style.width = document.getElementById("mainWindow").offsetWidth;
+                washSuccessPanel.style.height = document.getElementById("mainWindow").offsetHeight;
+                //todo计算新获得的技能
+                var index = $('input:radio:checked').val();
+                newSkill = washSkill(index);
+                //洗练检测
+                checkSkill();
+            }
+
+            /**
+             * 填充洗练成功界面
+             * @param index
+             */
+            function fillWashSuccessPanel(oldSkill, newSkill){
+                var $oldSkillIcons = $("#oldSkillPanel .skillIcon");
+                var $oldSkillNames = $("#oldSkillPanel  .skillName");
+                var $oldSkillDetails = $("#oldSkillPanel .skillDetail");
+                var $newSkillIcons = $("#newSkillPanel .skillIcon");
+                var $newSkillNames = $("#newSkillPanel  .skillName");
+                var $newSkillDetails = $("#newSkillPanel .skillDetail");
+                $oldSkillIcons.css({"background-image":"url("+ oldSkill.pic +")"});
+                $oldSkillNames.get(0).innerHTML = oldSkill.name;
+                $oldSkillDetails.get(0).innerHTML = oldSkill.desp;
+                $newSkillIcons.css({"background-image":"url("+ newSkill.pic +")"});
+                $newSkillNames.get(0).innerHTML = newSkill.name;
+                $newSkillDetails.get(0).innerHTML = newSkill.desp;
+            }
+
+            function cancel(){
+                console.log("取消保存");
+                //关闭成功面板，返回洗练界面
+                var washSuccessPanel = document.getElementById("washSuccessPanel");
+                washSuccessPanel.style.display = "none";
+            }
+
+            function save(){
+                console.log("保存");
+                //关闭成功面板，返回洗练界面
+                var washSuccessPanel = document.getElementById("washSuccessPanel");
+                washSuccessPanel.style.display = "none";
+                //置换技能
+                var index = $('input:radio:checked').val();
+                petSkillPool[index] = newSkill;
+                fillSkill();
+            }
+        </script>
+    </head>
+    <body>
+        <div class="mainWindow" id="mainWindow">
+            <img id="bg" src="../file/pic/主背景板.jpg" width="100%" height="100%">
+            <div id="skillPanel">
+                <dt id="skill01" class="skillItem">
+                    <dl class="skillIcon"></dl>
+                    <dl class="skillDesp">
+                        <p class="skillName">效率至上</p>
+                        <p class="skillDetail">探险获得的特殊奖励数量提高100%</p>
+                        <input type="radio" name="selectSkill" value="0" checked/>
+                        <span></span>
+                    </dl>
+                </dt>
+                <dt id="skill02" class="skillItem">
+                    <dl class="skillIcon"></dl>
+                    <dl class="skillDesp">
+                        <p class="skillName">名称</p>
+                        <p class="skillDetail">描述</p>
+                        <input type="radio" name="selectSkill" value="1"/>
+                        <span></span>
+                    </dl>
+                </dt>
+                <dt id="skill03" class="skillItem">
+                    <dl class="skillIcon"></dl>
+                    <dl class="skillDesp">
+                        <p class="skillName">名称</p>
+                        <p class="skillDetail">描述</p>
+                        <input type="radio" name="selectSkill" value="2"/>
+                        <span></span>
+                    </dl>
+                </dt>
+            </div>
+            <div id="gotoWashButton" class="button" onclick="gotoWash()"></div>
+            <div id="washButton" class="button" onclick="startWash()"></div>
+
+            <div id="washSuccessPanel">
+                <img id="washSuccessBg" src="../file/pic/洗练成功界面.jpg" width="77%" height="42%">
+                <div id="oldSkillPanel">
+                    <dt id="oldSkill" class="skillItem">
+                        <dl class="skillIcon"></dl>
+                        <dl class="skillDesp">
+                            <p class="skillName">效率至上</p>
+                            <p class="skillDetail">探险获得的特殊奖励数量提高100%</p>
+                        </dl>
+                    </dt>
+                </div>
+                <div id="newSkillPanel">
+                    <dt id="newSkill" class="skillItem">
+                        <dl class="skillIcon"></dl>
+                        <dl class="skillDesp">
+                            <p class="skillName">效率至上</p>
+                            <p class="skillDetail">探险获得的特殊奖励数量提高100%</p>
+                        </dl>
+                    </dt>
+                </div>
+                <div id="cancelButton" class="button" onclick="cancel()"></div>
+                <div id="saveButton" class="button" onclick="save()"></div>
+            </div>
+            <!--菜单-->
+            <div id="menu" class="mHeader hidden-lg hidden-md">
+                <div class="mIcon left">
+                    <span class="controlIcon"></span>
+                    <span class="controlIcon"></span>
+                    <span class="controlIcon"></span>
+                </div>
+                <div class="mLogo">
+                    <p id="washCount">已洗练0次！</p>
+                    <p id="washCost">约等于花费 0 m！</p>
+                </div>
+                <div class="mMenu clear">
+                    <ul>
+                        <li><a href="javascript:void(0);" onclick="resetSkill();" >重置技能</a></li>
+                        <!--<li><a href="javascript:void(0);" >更新日志</a></li>-->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="../js/wash.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        //移动端菜单
+        $(".mMenu").hide();
+        $(".mIcon").click(function(){
+            if($(this).hasClass("mIconActive")){
+                $(this).removeClass("mIconActive").addClass("mIconClose");
+                $(".mMenu").show().slideUp();
+            }else{
+                $(this).removeClass("mIconClose").addClass("mIconActive");
+                $(".mMenu").hide().slideDown();
+            }
+        });
+    </script>
+</html>
